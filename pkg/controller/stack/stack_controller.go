@@ -103,7 +103,7 @@ func newReconciler(mgr manager.Manager) reconcile.Reconciler {
 	log.Info(assumeRole)
 	if assumeRole != "" {
 		log.Info("run assume")
-		creds := stscreds.NewCredentials(sess, assumeRole)
+		//creds := stscreds.NewCredentials(sess, assumeRole)
 		client = cloudformation.New(sess, &aws.Config{
 			Credentials: creds,
 			Region:      aws.String(region),
@@ -256,6 +256,7 @@ func (r *ReconcileStack) createStack(stack *cloudformationv1alpha1.Stack) error 
 		TemplateBody: aws.String(stack.Spec.Template),
 		Parameters:   r.stackParameters(stack),
 		Tags:         stackTags,
+		RoleARN:      aws.String("arn:aws:iam::280268084004:role/itno2"),
 	}
 
 	if _, err := r.cf.CreateStack(input); err != nil {
@@ -299,6 +300,7 @@ func (r *ReconcileStack) updateStack(stack *cloudformationv1alpha1.Stack) error 
 		TemplateBody: aws.String(stack.Spec.Template),
 		Parameters:   r.stackParameters(stack),
 		Tags:         stackTags,
+		RoleARN:      aws.String("arn:aws:iam::280268084004:role/itno2"),
 	}
 
 	if _, err := r.cf.UpdateStack(input); err != nil {
